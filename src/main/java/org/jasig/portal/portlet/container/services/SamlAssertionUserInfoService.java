@@ -30,13 +30,11 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.pluto.PortletContainerException;
-import org.apache.pluto.PortletWindow;
-import org.apache.pluto.descriptors.portlet.PortletAppDD;
-import org.apache.pluto.descriptors.portlet.UserAttributeDD;
-import org.apache.pluto.internal.InternalPortletRequest;
-import org.apache.pluto.internal.InternalPortletWindow;
-import org.apache.pluto.spi.optional.UserInfoService;
+import org.apache.pluto.container.PortletContainerException;
+import org.apache.pluto.container.PortletWindow;
+import org.apache.pluto.container.UserInfoService;
+import org.apache.pluto.container.om.portlet.PortletApplicationDefinition;
+import org.apache.pluto.container.om.portlet.UserAttribute;
 import org.jasig.portal.portlet.om.IPortletDefinition;
 import org.jasig.portal.portlet.om.IPortletEntity;
 import org.jasig.portal.portlet.om.IPortletWindow;
@@ -202,33 +200,15 @@ public class SamlAssertionUserInfoService implements UserInfoService {
 
   /*
    * (non-Javadoc)
-   * @see org.apache.pluto.spi.optional.UserInfoService#getUserInfo(javax.portlet.PortletRequest)
-   */
-  @SuppressWarnings({ "unchecked", "deprecation" })
-  @Deprecated
-  public Map getUserInfo(PortletRequest request) throws PortletContainerException {
-    if (!(request instanceof InternalPortletRequest)) {
-      throw new IllegalArgumentException("The SamlAssertionUserInfoService requires the PortletRequest parameter to implement the '"
-              + InternalPortletRequest.class.getName() + "' interface.");
-    }
-    final InternalPortletRequest internalRequest = (InternalPortletRequest) request;
-    final InternalPortletWindow internalPortletWindow = internalRequest.getInternalPortletWindow();
-
-    return this.getUserInfo(request, internalPortletWindow);
-  }
-
-  /*
-   * (non-Javadoc)
    * @see org.apache.pluto.spi.optional.UserInfoService#getUserInfo(javax.portlet.PortletRequest, org.apache.pluto.PortletWindow)
    */
-  @SuppressWarnings("unchecked")
-  public Map getUserInfo(PortletRequest request, PortletWindow portletWindow) throws PortletContainerException {
+  public Map<String, String> getUserInfo(PortletRequest request, PortletWindow portletWindow) throws PortletContainerException {
 
     Map<String, String> userInfo = new LinkedHashMap<String, String>();
 
     // check to see if a SAML assertion is expected by this portlet
     if (isSamlAssertionRequested(request, portletWindow)) {
-      final HttpServletRequest httpServletRequest = this.portalRequestUtils.getOriginalPortletAdaptorRequest(request);
+      final HttpServletRequest httpServletRequest = this.portalRequestUtils.getPortletHttpRequest(request);
 
       // if it is, attempt to request it from the session
       HttpSession session = httpServletRequest.getSession();
@@ -238,12 +218,12 @@ public class SamlAssertionUserInfoService implements UserInfoService {
         userInfo.put(this.samlAssertionKey, samlArtifact);
       }
       else
-        logger.warn("Portlet " + portletWindow.getPortletName() + " requested SAML assertion, but none was provided.");
+        logger.warn("Portlet " + portletWindow.getPortletDefinition().getPortletName() + " requested SAML assertion, but none was provided.");
     }
 
     // check to see if IdP public keys are expected by this portlet
     if (areIdPKeysRequested(request, portletWindow)) {
-      final HttpServletRequest httpServletRequest = this.portalRequestUtils.getOriginalPortletAdaptorRequest(request);
+      final HttpServletRequest httpServletRequest = this.portalRequestUtils.getPortletHttpRequest(request);
 
       // if they are, attempt to request them from the session
       HttpSession session = httpServletRequest.getSession();
@@ -253,7 +233,7 @@ public class SamlAssertionUserInfoService implements UserInfoService {
         userInfo.put(this.idpPublicKeysKey, idpArtifact);
       }
       else
-        logger.warn("Portlet " + portletWindow.getPortletName() + " requested IdP public key, but none was provided.");
+        logger.warn("Portlet " + portletWindow.getPortletDefinition().getPortletName() + " requested IdP public key, but none was provided.");
     }
     return userInfo;
   }
@@ -269,22 +249,20 @@ public class SamlAssertionUserInfoService implements UserInfoService {
    * @throws PortletContainerException
    *           if expeced attributes cannot be determined
    */
-  @SuppressWarnings("unchecked")
   protected boolean isSamlAssertionRequested(PortletRequest request, PortletWindow plutoPortletWindow) throws PortletContainerException {
 
     // get the list of requested user attributes
-    final HttpServletRequest httpServletRequest = this.portalRequestUtils.getOriginalPortletAdaptorRequest(request);
+    final HttpServletRequest httpServletRequest = this.portalRequestUtils.getPortletHttpRequest(request);
     final IPortletWindow portletWindow = this.portletWindowRegistry.convertPortletWindow(httpServletRequest, plutoPortletWindow);
-    final IPortletEntity portletEntity = this.portletWindowRegistry.getParentPortletEntity(httpServletRequest, portletWindow
-            .getPortletWindowId());
-    final IPortletDefinition portletDefinition = this.portletEntityRegistry.getParentPortletDefinition(portletEntity
-            .getPortletEntityId());
-    final PortletAppDD portletApplicationDescriptor = this.portletDefinitionRegistry
+    final IPortletEntity portletEntity = portletWindow.getPortletEntity();
+    
+    final IPortletDefinition portletDefinition = portletEntity.getPortletDefinition();
+    final PortletApplicationDefinition portletApplicationDescriptor = this.portletDefinitionRegistry
             .getParentPortletApplicationDescriptor(portletDefinition.getPortletDefinitionId());
 
     // check to see if the SAML assertion key is one of the requested user attributes
-    List<UserAttributeDD> requestedUserAttributes = portletApplicationDescriptor.getUserAttributes();
-    for (final UserAttributeDD userAttributeDD : requestedUserAttributes) {
+    List<? extends UserAttribute> requestedUserAttributes = portletApplicationDescriptor.getUserAttributes();
+    for (final UserAttribute userAttributeDD : requestedUserAttributes) {
       final String attributeName = userAttributeDD.getName();
       if (attributeName.equals(this.samlAssertionKey))
         return true;
@@ -305,22 +283,19 @@ public class SamlAssertionUserInfoService implements UserInfoService {
    * @throws PortletContainerException
    *           if expeced attributes cannot be determined
    */
-  @SuppressWarnings("unchecked")
   protected boolean areIdPKeysRequested(PortletRequest request, PortletWindow plutoPortletWindow) throws PortletContainerException {
 
     // get the list of requested user attributes
-    final HttpServletRequest httpServletRequest = this.portalRequestUtils.getOriginalPortletAdaptorRequest(request);
+    final HttpServletRequest httpServletRequest = this.portalRequestUtils.getPortletHttpRequest(request);
     final IPortletWindow portletWindow = this.portletWindowRegistry.convertPortletWindow(httpServletRequest, plutoPortletWindow);
-    final IPortletEntity portletEntity = this.portletWindowRegistry.getParentPortletEntity(httpServletRequest, portletWindow
-            .getPortletWindowId());
-    final IPortletDefinition portletDefinition = this.portletEntityRegistry.getParentPortletDefinition(portletEntity
-            .getPortletEntityId());
-    final PortletAppDD portletApplicationDescriptor = this.portletDefinitionRegistry
+    final IPortletEntity portletEntity = portletWindow.getPortletEntity();
+    final IPortletDefinition portletDefinition = portletEntity.getPortletDefinition();
+    final PortletApplicationDefinition portletApplicationDescriptor = this.portletDefinitionRegistry
             .getParentPortletApplicationDescriptor(portletDefinition.getPortletDefinitionId());
 
     // check to see if the SAML assertion key is one of the requested user attributes
-    List<UserAttributeDD> requestedUserAttributes = portletApplicationDescriptor.getUserAttributes();
-    for (final UserAttributeDD userAttributeDD : requestedUserAttributes) {
+    List<? extends UserAttribute> requestedUserAttributes = portletApplicationDescriptor.getUserAttributes();
+    for (final UserAttribute userAttributeDD : requestedUserAttributes) {
       final String attributeName = userAttributeDD.getName();
       if (attributeName.equals(this.idpPublicKeysKey))
         return true;

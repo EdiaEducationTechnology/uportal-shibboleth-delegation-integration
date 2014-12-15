@@ -1,62 +1,75 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    
-    <parent>
-        <groupId>org.jasig.parent</groupId>
-        <artifactId>jasig-parent</artifactId>
-        <version>20</version>
-    </parent>
-    
-    
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>org.jasig.service</groupId>
-    <artifactId>uportal-shibboleth-delegation-integration</artifactId>
-    <version>1.1.1-SNAPSHOT</version>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-    <name>SAML Assertion UserInfoService</name>
-    <description>Project allowing to make the SAML assertion available as a prtlet attribute</description>
+	<parent>
+		<groupId>org.jasig.parent</groupId>
+		<artifactId>jasig-parent</artifactId>
+		<version>20</version>
+	</parent>
 
-    <properties>
-        <uportal.version>3.1.2</uportal.version>
-    </properties>
-    
-    <scm>
-        <connection>scm:svn:https://source.jasig.org/sandbox/uportal-shibboleth-delegation-integration/trunk</connection>
-        <developerConnection>scm:svn:https://source.jasig.org/sandbox/uportal-shibboleth-delegation-integration/trunk</developerConnection>
-        <url>https://developer.jasig.org/source/browse/jasigsvn/sandbox/uportal-shibboleth-delegation-integration/trunk</url>
-    </scm>
 
-    <dependencies>
-        <dependency>
-            <groupId>commons-httpclient</groupId>
-            <artifactId>commons-httpclient</artifactId>
-            <version>3.1</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-            <version>2.4</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>1.1.1</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.portlet</groupId>
-            <artifactId>portlet-api</artifactId>
-            <version>1.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>2.3</version>
-            <scope>provided</scope>
-        </dependency>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.jasig.service</groupId>
+	<artifactId>uportal-shibboleth-delegation-integration</artifactId>
+	<version>1.2.0-SNAPSHOT</version>
+
+	<name>SAML Assertion UserInfoService</name>
+	<description>Project allowing to make the SAML assertion available as a prtlet attribute</description>
+
+	<properties>
+		<uportal.version>4.1.0</uportal.version>
+		<pluto.version>2.1.0-M3</pluto.version>
+	</properties>
+
+	<scm>
+		<connection>scm:svn:https://source.jasig.org/sandbox/uportal-shibboleth-delegation-integration/trunk</connection>
+		<developerConnection>scm:svn:https://source.jasig.org/sandbox/uportal-shibboleth-delegation-integration/trunk</developerConnection>
+		<url>https://developer.jasig.org/source/browse/jasigsvn/sandbox/uportal-shibboleth-delegation-integration/trunk</url>
+	</scm>
+
+	<dependencies>
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>3.1</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.4</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.1.1</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.portlet</groupId>
+			<artifactId>portlet-api</artifactId>
+			<version>1.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.3</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.portals.pluto</groupId>
+			<artifactId>pluto-container-api</artifactId>
+			<version>2.1.0-M3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.portals.pluto</groupId>
+			<artifactId>pluto-container</artifactId>
+			<version>2.1.0-M3</version>
+		</dependency>        
+        <!-- 
         <dependency>
             <groupId>org.apache.pluto</groupId>
             <artifactId>pluto-container</artifactId>
@@ -76,76 +89,78 @@
             <version>1.1.7</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.jasig.portal</groupId>
-            <artifactId>uportal-impl</artifactId>
-            <version>${uportal.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-            <version>2.5.6.SEC02</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-        	<groupId>org.springframework</groupId>
-        	<artifactId>spring-web</artifactId>
-        	<version>2.5.6.SEC02</version>
-        	<scope>provided</scope>
-        </dependency>
-    </dependencies>
+         -->
+		<dependency>
+			<groupId>org.jasig.portal</groupId>
+			<artifactId>uportal-war</artifactId>
+			<version>${uportal.version}</version>
+			<scope>provided</scope>
+			<classifier>classes</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+			<version>2.5.6.SEC02</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>2.5.6.SEC02</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.5</source>
-                    <target>1.5</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-site-plugin</artifactId>
-                <version>2.1</version>
-            </plugin>
-        </plugins>
-    </build>
-    <reporting>
-        <plugins>
-            <plugin>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.6.1</version>
-            </plugin>
-            <plugin>
-                <artifactId>maven-jxr-plugin</artifactId>
-                <version>2.1</version>
-            </plugin>
-            <plugin>
-                <artifactId>maven-pmd-plugin</artifactId>
-                <version>2.4</version>
-                <configuration>
-                    <targetJdk>1.5</targetJdk>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-surefire-report-plugin</artifactId>
-                <version>2.5</version>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>findbugs-maven-plugin</artifactId>
-                <version>2.3.1</version>
-                <configuration>
-                    <includeTests>true</includeTests>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>cobertura-maven-plugin</artifactId>
-                <version>2.4</version>
-            </plugin>
-        </plugins>
-    </reporting>
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>2.1</version>
+			</plugin>
+		</plugins>
+	</build>
+	<reporting>
+		<plugins>
+			<plugin>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.6.1</version>
+			</plugin>
+			<plugin>
+				<artifactId>maven-jxr-plugin</artifactId>
+				<version>2.1</version>
+			</plugin>
+			<plugin>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<targetJdk>1.5</targetJdk>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+				<version>2.5</version>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>findbugs-maven-plugin</artifactId>
+				<version>2.3.1</version>
+				<configuration>
+					<includeTests>true</includeTests>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>cobertura-maven-plugin</artifactId>
+				<version>2.4</version>
+			</plugin>
+		</plugins>
+	</reporting>
 
 </project>
