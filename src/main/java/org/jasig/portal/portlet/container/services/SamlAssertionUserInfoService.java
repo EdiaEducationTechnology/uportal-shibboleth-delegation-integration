@@ -39,17 +39,16 @@ import org.jasig.portal.portlet.om.IPortletDefinition;
 import org.jasig.portal.portlet.om.IPortletEntity;
 import org.jasig.portal.portlet.om.IPortletWindow;
 import org.jasig.portal.portlet.registry.IPortletDefinitionRegistry;
-import org.jasig.portal.portlet.registry.IPortletEntityRegistry;
 import org.jasig.portal.portlet.registry.IPortletWindowRegistry;
 import org.jasig.portal.url.IPortalRequestUtils;
-import org.jasig.portal.user.IUserInstanceManager;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Required;
+import org.springframework.stereotype.Service;
 
+@Service("samlAssertionUserInfoService")
 public class SamlAssertionUserInfoService implements UserInfoService {
 
-  private IUserInstanceManager userInstanceManager;
   private IPortletWindowRegistry portletWindowRegistry;
-  private IPortletEntityRegistry portletEntityRegistry;
   private IPortletDefinitionRegistry portletDefinitionRegistry;
   private IPortalRequestUtils portalRequestUtils;
   protected final Log logger = LogFactory.getLog(getClass());
@@ -66,6 +65,7 @@ public class SamlAssertionUserInfoService implements UserInfoService {
    *          the portalRequestUtils to set
    */
   @Required
+  @Autowired
   public void setPortalRequestUtils(IPortalRequestUtils portalRequestUtils) {
     Validate.notNull(portalRequestUtils);
     this.portalRequestUtils = portalRequestUtils;
@@ -120,38 +120,6 @@ public class SamlAssertionUserInfoService implements UserInfoService {
   }
 
   /**
-   * @return the UserInstanceManager
-   */
-  public IUserInstanceManager getUserInstanceManager() {
-    return userInstanceManager;
-  }
-
-  /**
-   * @param userInstanceManager
-   *          the UserInstanceManager
-   */
-  @Required
-  public void setUserInstanceManager(IUserInstanceManager userInstanceManager) {
-    this.userInstanceManager = userInstanceManager;
-  }
-
-  /**
-   * @return the portletEntityRegistry
-   */
-  public IPortletEntityRegistry getPortletEntityRegistry() {
-    return this.portletEntityRegistry;
-  }
-
-  /**
-   * @param portletEntityRegistry
-   *          the portletEntityRegistry to set
-   */
-  @Required
-  public void setPortletEntityRegistry(IPortletEntityRegistry portletEntityRegistry) {
-    this.portletEntityRegistry = portletEntityRegistry;
-  }
-
-  /**
    * @return the portletWindowRegistry
    */
   public IPortletWindowRegistry getPortletWindowRegistry() {
@@ -163,6 +131,7 @@ public class SamlAssertionUserInfoService implements UserInfoService {
    *          the portletWindowRegistry to set
    */
   @Required
+  @Autowired
   public void setPortletWindowRegistry(IPortletWindowRegistry portletWindowRegistry) {
     this.portletWindowRegistry = portletWindowRegistry;
   }
@@ -179,6 +148,7 @@ public class SamlAssertionUserInfoService implements UserInfoService {
    *          the portletDefinitionRegistry to set
    */
   @Required
+  @Autowired
   public void setPortletDefinitionRegistry(IPortletDefinitionRegistry portletDefinitionRegistry) {
     this.portletDefinitionRegistry = portletDefinitionRegistry;
   }
