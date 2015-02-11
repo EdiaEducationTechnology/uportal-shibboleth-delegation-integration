@@ -96,6 +96,17 @@
 			<version>${uportal.version}</version>
 			<scope>provided</scope>
 			<classifier>classes</classifier>
+			<!-- 	
+				BEWARE, Since uPortal has become one artifact, there exists the 
+				danger of a circular dependency!
+			-->
+			<exclusions>
+				<exclusion>
+        <groupId>org.jasig.service</groupId>
+        <artifactId>uportal-shibboleth-delegation-integration</artifactId>
+
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
