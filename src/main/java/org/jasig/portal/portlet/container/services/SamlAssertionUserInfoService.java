@@ -42,6 +42,7 @@ import org.jasig.portal.portlet.registry.IPortletDefinitionRegistry;
 import org.jasig.portal.portlet.registry.IPortletWindowRegistry;
 import org.jasig.portal.url.IPortalRequestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.stereotype.Service;
 
@@ -84,12 +85,12 @@ public class SamlAssertionUserInfoService implements UserInfoService {
   /**
    * The default name of the session attribute used to pass the SAML assertion to the portlet.
    */
-  private String samlAssertionSessionKey = "samlAssertion";
+  private String samlAssertionSessionKey = "SAML Assertion";
 
   /**
    * The default name of the session attribute used to pass the IdP public keys to the portlet.
    */
-  private String idpPublicKeysSessionKey = "idpPublicKeys";
+  private String idpPublicKeysSessionKey = "IdP Public Keys";
 
   /**
    * @param idpPublicKeysKey the idpPublicKeysKey to set
